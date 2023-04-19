@@ -15,7 +15,7 @@ din *abrirArq(din *file, int *n){
 	DIR *dir;
 	int result;
 	char nomeArq[50];
-	char bindesc[10]; //dados sem utilizade para o objetivo do programa
+	char enddesc[10]; //dados sem utilizade para o objetivo do programa
 
 	struct dirent *_dir;	
 		
@@ -25,7 +25,7 @@ din *abrirArq(din *file, int *n){
 		while((_dir = readdir(dir)) != NULL){
 			if(strstr(_dir->d_name, ".din") != NULL){
 				strcpy(nomeArq, _dir->d_name);
-				printf("%s\n", nomeArq);
+				printf("Arquivo %s localizado no diretório.\n\n", nomeArq);
 			}
 		}
 	}	
@@ -44,7 +44,7 @@ din *abrirArq(din *file, int *n){
 		novo->prox = NULL;
 		file = novo;
 		p = file;
-		fscanf(ptrarq, " %[^\n]", bindesc);
+		fscanf(ptrarq, " %[^\n]", enddesc);
 		*n = 1;
 		
 		while(result!=EOF){
@@ -53,7 +53,7 @@ din *abrirArq(din *file, int *n){
 			novo->prox = NULL;
 			p->prox = novo;
 			p = p->prox;
-			fscanf(ptrarq, " %[^\n]", bindesc);
+			fscanf(ptrarq, " %[^\n]", enddesc);
 			*n+=1;
 			if(feof(ptrarq)){
 				break;
@@ -67,7 +67,26 @@ din *abrirArq(din *file, int *n){
 	return file;
 	}
 
+void contaComando(din *file){
+	din *p; 
+	p = file;
+	int le, busca, escreve;
+	le = busca = escreve = 0;
 
+	while(p!=NULL){
+		if(p->instrucao==0){
+			le+=1;
+		}
+		else if(p->instrucao==1){
+			escreve+=1;
+		}
+		else{
+			busca+=1;
+		}
+	p=p->prox;
+	}
+	printf("Foram realizados %d acessos às instruções, %d acessos aos dados, %d leituras de dados e %d escritas de dados.\n", busca, le+escreve, le, escreve);
+}
 
 
 int main(){
@@ -78,16 +97,8 @@ int main(){
 	int n = 0;
 
 	file = abrirArq(file, &n);
-	printf("Foram lidar %d instruções.\n",n);
-	/*conrfimar valores*/
-	p = file;
-	while(p != NULL){
-		printf("%d\n",p->instrucao);
-		p = p->prox;
+	printf("Foram realizados %d acessos à memória.\n",n);
 
+	contaComando(file);
 	
-
-
-
-	}
 }

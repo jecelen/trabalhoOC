@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <dirent.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -12,27 +11,17 @@ typedef struct arquivo
 
 din *abrirArq(din *file, int *n){
 	FILE *ptrarq;
-	DIR *dir;
 	int result;
 	char nomeArq[50];
 	char enddesc[10]; //dados sem utilizade para o objetivo do programa
 
-	struct dirent *_dir;	
-		
-	/*buscar por arquivo .dir no diretorio*/
-	dir = opendir(".");
-	if(dir != NULL){
-		while((_dir = readdir(dir)) != NULL){
-			if(strstr(_dir->d_name, ".din") != NULL){
-				strcpy(nomeArq, _dir->d_name);
-				printf("Arquivo %s localizado no diretório.\n\n", nomeArq);
-			}
-		}
-	}	
-	/*abrir arquivo .dir*/
+	printf("Digite o nome e extensão do arquivo: ");
+	scanf(" %[^\n]", nomeArq);
+
 	ptrarq = fopen(nomeArq, "r");
 	if(ptrarq == NULL){
 		printf("Falha ao abrir o arquivo .din.\n");
+		file->instrucao = -1;
 		return file;
 		}
 	
@@ -61,8 +50,6 @@ din *abrirArq(din *file, int *n){
 			}
 		fclose(ptrarq);
 		}
-
-	closedir(dir);
 	
 	return file;
 	}
@@ -97,8 +84,10 @@ int main(){
 	int n = 0;
 
 	file = abrirArq(file, &n);
-	printf("Foram realizados %d acessos à memória.\n",n);
 
-	contaComando(file);
+	if(file->instrucao != -1){
+		printf("Foram realizados %d acessos à memória.\n",n);
+		contaComando(file);
+	}
 	
 }
